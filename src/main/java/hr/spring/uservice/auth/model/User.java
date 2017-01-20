@@ -1,9 +1,11 @@
 package hr.spring.uservice.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import hr.spring.uservice.application.model.BaseModel;
+import hr.spring.uservice.application.configuration.ApplicationContextProvider;
+import hr.spring.uservice.auth.repository.UserRepository;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.repository.support.Repositories;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -11,7 +13,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "uuid", callSuper = false)
 @Table(name = "auth_user")
 public class User extends BaseModel implements UserDetails {
 
@@ -65,6 +67,23 @@ public class User extends BaseModel implements UserDetails {
     @Transient
     public boolean isCredentialsNonExpired() {
         return enabled;
+    }
+
+    @Transient
+    public static UserRepository getRepository() {
+        return (UserRepository) (new Repositories(ApplicationContextProvider.getApplicationContext())).getRepositoryFor(User.class);
+    }
+
+    @Override
+    @Transient
+    public void save() {
+        getRepository().save(this);
+    }
+
+    @Override
+    @Transient
+    public void delete() {
+        getRepository().delete(this);
     }
 
 }

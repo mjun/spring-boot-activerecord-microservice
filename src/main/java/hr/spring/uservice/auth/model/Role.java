@@ -1,22 +1,24 @@
 package hr.spring.uservice.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import hr.spring.uservice.application.model.BaseModel;
+import hr.spring.uservice.application.configuration.ApplicationContextProvider;
+import hr.spring.uservice.auth.repository.RoleRepository;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.repository.support.Repositories;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "uuid", callSuper = false)
 @Table(name = "auth_role",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = { "role", "username_id" }))
 public class Role extends BaseModel implements GrantedAuthority {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "username_id", nullable = false)
     @JsonProperty("user")
     private User user;
@@ -31,4 +33,20 @@ public class Role extends BaseModel implements GrantedAuthority {
         return role;
     }
 
+    @Transient
+    public static RoleRepository getRepository() {
+        return (RoleRepository) (new Repositories(ApplicationContextProvider.getApplicationContext())).getRepositoryFor(Role.class);
+    }
+
+    @Override
+    @Transient
+    public void save() {
+        getRepository().save(this);
+    }
+
+    @Override
+    @Transient
+    public void delete() {
+        getRepository().delete(this);
+    }
 }

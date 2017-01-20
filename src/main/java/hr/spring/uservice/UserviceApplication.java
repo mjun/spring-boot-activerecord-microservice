@@ -10,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 @Slf4j
 @SpringBootApplication
 public class UserviceApplication {
@@ -21,6 +23,7 @@ public class UserviceApplication {
 	@Component
 	public class TestRunner implements CommandLineRunner {
 
+        @Transactional
 		public void run(String... args) {
 
 		    // TEST
@@ -32,35 +35,37 @@ public class UserviceApplication {
 			user.setPassword("test123");
 			user.save();
 
-            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            String json = "";
-            try {
-                json = ow.writeValueAsString(user);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+
+            User user2 = new User();
+            user2.setUsername("user2");
+            user2.setFirstName("User");
+            user2.setLastName("Name 2");
+            user2.setEmail("test@example.com");
+            user2.setPassword("test123");
+            user2.save();
+
+
+            User user3 = new User();
+            user3.setUsername("user3");
+            user3.setFirstName("User");
+            user3.setLastName("Name 3");
+            user3.setEmail("test2@example.com");
+            user3.setPassword("test123");
+            user3.save();
+
+
+            for (User u : User.getRepository().findAll()) {
+
+                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                String json = "";
+                try {
+                    json = ow.writeValueAsString(u);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                log.info("### " + json);
             }
-
-            log.info("### " + json);
-
-			user.delete();
-
-            try {
-                json = ow.writeValueAsString(user);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-            log.info("### " + json);
-
-            user.save();
-
-            try {
-                json = ow.writeValueAsString(user);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-            log.info("### " + json);
 
 		}
 
