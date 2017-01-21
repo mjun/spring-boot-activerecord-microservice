@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@EqualsAndHashCode(of = "", callSuper = false)
+@EqualsAndHashCode(of = "", callSuper = true)
 @Table(name = "auth_user")
 public class User extends BaseModel implements UserDetails {
 

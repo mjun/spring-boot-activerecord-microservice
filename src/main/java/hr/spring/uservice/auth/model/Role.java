@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@EqualsAndHashCode(of = "", callSuper = false)
+@EqualsAndHashCode(of = "", callSuper = true)
 @Table(name = "auth_role",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = { "role", "username_id" }))
