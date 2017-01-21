@@ -1,7 +1,6 @@
 package hr.spring.uservice.auth.model;
 
 import com.eaio.uuid.UUID;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,10 +13,8 @@ public abstract class BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("id")
     protected Long id;
 
-    @JsonProperty("uuid")
     protected String uuid;
 
     public BaseModel() {
